@@ -40,7 +40,7 @@ const insert = {
         INSERT INTO "user"
           (
             oauth_provider, oauth_id,
-            username, avatar_url, email,
+            username, email,
             created_at
           )
         VALUES
