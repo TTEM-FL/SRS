@@ -20,12 +20,20 @@ const insert = {
           avatarUrl: oauthProfile.picture,
           email: oauthProfile.email
         });
+      case 'flyinglanguages':
+        return insert.create({
+          oauthProvider: 'flyinglanguages',
+          oauthId: oauthProfile.id.toString(),
+          username: oauthProfile.username,
+          avatarUrl: oauthProfile.avatar_url,
+          email: oauthProfile.email
+        });
       default:
         throw new Error(`No such oauthProvider as '${oauthProvider}'.`);
     }
   },
 
-  create: requireKeys(['oauthProvider', 'oauthId', 'username', 'avatarUrl', 'email'],
+  create: requireKeys(['oauthProvider', 'oauthId', 'username', 'email'],
     (user) =>
       db.one(
         `
@@ -38,7 +46,7 @@ const insert = {
         VALUES
           (
             \${oauthProvider}, \${oauthId},
-            \${username}, \${avatarUrl}, \${email},
+            \${username}, \${email},
             now()
           )
         RETURNING *
@@ -47,7 +55,6 @@ const insert = {
           oauthProvider: user.oauthProvider,
           oauthId: user.oauthId,
           username: user.username,
-          avatarUrl: user.avatarUrl,
           email: user.email
         }
       )

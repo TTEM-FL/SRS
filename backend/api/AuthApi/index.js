@@ -62,4 +62,17 @@ router.get('/google/callback', catchAsync(async (request, response) => {
   await createOauthCallbackRoute('google', request.query.code, response);
 }));
 
+router.post('/fl/', async (request, response) => {
+  const {oauth_id, username, email, avatar_url} = request.body;
+  const oauthProviderName = 'flyinglanguages';
+  let dbUser = await UserModel.select.oneByOauth(oauthProviderName, oauth_id);
+  if (!dbUser) {
+    dbUser = await UserModel.insert.createFrom(oauthProviderName, {id: oauth_id, username, email, avatar_url});
+    await NotificationModel.insert.welcome_to_memcode({ userId: dbUser.id });
+  }
+  const token = jwt.sign(dbUser, process.env['JWT_SECRET']);
+  response.send({token});
+
+});
+
 export default router;

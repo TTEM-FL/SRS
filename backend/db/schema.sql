@@ -47,10 +47,11 @@ CREATE TABLE course (
   description TEXT,
   if_public BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-
+  resource_id VARCHAR NOT NULL,
   duplicated_from_course_id INTEGER REFERENCES course (id) ON DELETE SET NULL DEFAULT NULL,
   user_id INTEGER REFERENCES "user" (id) ON DELETE CASCADE NOT NULL,
-  course_category_id INTEGER REFERENCES course_category (id) ON DELETE SET DEFAULT DEFAULT 1
+  course_category_id INTEGER REFERENCES course_category (id) ON DELETE SET DEFAULT DEFAULT 1,
+  unique (resource_id)
 );
 
 -- Hard Sciences
@@ -82,17 +83,18 @@ CREATE TABLE problem (
   type VARCHAR NOT NULL,
   -- inlinedAnswers { content, explanation }
   -- separateAnswer { content, answer }
-  content JSON,
+  content jsonb,
   position INTEGER DEFAULT 0,
 
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  course_id INTEGER REFERENCES course (id) ON DELETE CASCADE NOT NULL
+  course_id INTEGER REFERENCES course (id) ON DELETE CASCADE NOT NULL,
+  unique (content, course_id)
 );
 
 CREATE TABLE course_user_is_learning (
   id SERIAL PRIMARY KEY,
 
-  active BOOLEAN NOT NULL,
+  active BOOLEAN NOT NULL, -- whether it's shown in /courses/learning
   started_learning_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 
   course_id INTEGER REFERENCES course (id) ON DELETE CASCADE NOT NULL,
@@ -177,5 +179,4 @@ INSERT INTO "public"."course_category" ("id", "name", "course_category_group_id"
 ('16', 'German', '4'),
 ('18', 'Spanish', '4'),
 ('19', 'Other', '4'),
-('20', 'Philosophy', '3'),
-('21', 'French', '4');
+('20', 'Philosophy', '3');
