@@ -47,6 +47,7 @@ router.post('/', authenticate, catchAsync(async (request, response) => {
     title: courseBody.title,
     description: courseBody.description,
     if_public: courseBody.ifPublic,
+    resource_id: courseBody.resourceId,
     course_category_id: courseBody.courseCategoryId,
     user_id: currentUser.id
   })
