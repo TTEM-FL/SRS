@@ -47,7 +47,7 @@ CREATE TABLE course (
   description TEXT,
   if_public BOOLEAN DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  resource_id VARCHAR NOT NULL DEFAULT 'user-0',
+  resource_id VARCHAR NOT NULL,
   duplicated_from_course_id INTEGER REFERENCES course (id) ON DELETE SET NULL DEFAULT NULL,
   user_id INTEGER REFERENCES "user" (id) ON DELETE CASCADE NOT NULL,
   course_category_id INTEGER REFERENCES course_category (id) ON DELETE SET DEFAULT DEFAULT 1,
